@@ -48,6 +48,28 @@ const generateToken = (user) => {
 
 function login(req, res) {
   // implement user login
+  const {username, password } = req.body;
+  const user = req.body;
+  if (!username || !password) {
+    res.status(400).json({ errorMessage: 'Missing username or password.' });
+  } else {
+    db('users')
+      .where({ username: user.username })
+      .first()
+      .then((user) => {
+        if (user && bcrypt.compareSync(password, user.password)) {
+          const token = generateToken(user);
+          res.status(200).json({
+            message: `Welcome ${user.username}!`, token,
+          });
+        } else {
+          res.status(401).json({ message: 'Invalid credentials.'});
+        }
+      })
+      .catch((error) => {
+        res.status(500).json({ errorMessage: 'Login unsuccessful.' })
+      });
+  }
 }
 
 function getJokes(req, res) {
