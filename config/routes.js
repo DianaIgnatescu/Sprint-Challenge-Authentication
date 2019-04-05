@@ -1,6 +1,10 @@
 const axios = require('axios');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-const { authenticate } = require('../auth/authenticate');
+const db = require('../database/dbConfig');
+
+const { authenticate, jwtKey } = require('../auth/authenticate');
 
 module.exports = server => {
   server.post('/api/register', register);
@@ -10,6 +14,24 @@ module.exports = server => {
 
 function register(req, res) {
   // implement user registration
+  const { username, password } = req.body;
+  let user = req.body;
+  const hashedPw = bcrypt.hashSync(user.password, 10);
+  user.password = hashedPw;
+  if (!username || !password) {
+    res.status(400).json({ errorMessage: 'Missing username or password.'})
+  } else {
+    db('users').insert(user)
+      .then(arrayOfIds => {
+        return db('users').where({ id: arrayOfIds[0] });
+      })
+      .then(arrayOfUsers => {
+        res.status(201).json(arrayOfUsers[0])
+      })
+      .catch((error) => {
+        res.status(500).json({ errorMessage: 'The user could not be created.' });
+      })
+  }
 }
 
 function login(req, res) {
