@@ -13,7 +13,6 @@ module.exports = server => {
 };
 
 function register(req, res) {
-  // implement user registration
   const { username, password } = req.body;
   let user = req.body;
   const hashedPw = bcrypt.hashSync(user.password, 10);
@@ -47,7 +46,6 @@ const generateToken = (user) => {
 };
 
 function login(req, res) {
-  // implement user login
   const {username, password } = req.body;
   const user = req.body;
   if (!username || !password) {
