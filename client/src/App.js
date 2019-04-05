@@ -63,6 +63,24 @@ class App extends Component {
       .catch((error) => console.log(error));
   };
 
+  handleSignUpChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({
+      signUp: {...this.state.signUp, [name]: value }
+    });
+  };
+
+  handleSignUp = (event) => {
+    event.preventDefault();
+    axios
+      .post('http://localhost:3300/api/register', this.state.signUp)
+      .then(response => {
+        localStorage.setItem('token', response.data.token);
+        this.props.history.push('/sign-in');
+      })
+      .catch((error) => console.log(error));
+  };
+
   onSignOut = () => {
     if (localStorage.getItem('token')) {
       localStorage.removeItem('token');
@@ -76,7 +94,7 @@ class App extends Component {
   };
 
   render() {
-    const { jokes, signIn, signedIn } = this.state;
+    const { jokes, signIn, signedIn, signUp } = this.state;
     return (
       <div className="App">
         <nav>
@@ -96,14 +114,22 @@ class App extends Component {
               handleSignIn={this.handleSignIn}
             />}
           />
-          <Route path="/sign-up" component={SignUp}/>
+          <Route path="/sign-up" render={(props) =>
+            <SignUp
+              {...props}
+              signUp={signUp}
+              signedIn={signedIn}
+              handleSignUpChange={this.handleSignUpChange}
+              handleSignUp={this.handleSignUp}
+            />}
+          />
           <Route path="/jokes" render={(props) =>
-              <Jokes
-                  {...props}
-                  jokes={jokes}
-                  signedIn={signedIn}
-                  getJokes={this.getJokes.bind(this)}
-              />}
+            <Jokes
+              {...props}
+              jokes={jokes}
+              signedIn={signedIn}
+              getJokes={this.getJokes.bind(this)}
+            />}
           />
         </main>
       </div>

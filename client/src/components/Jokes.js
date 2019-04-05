@@ -14,9 +14,9 @@ const Jokes = (props) => {
       <h2>List of Jokes</h2>
       <ul>
         {jokes.map(joke => (
-            <li key={joke.id}>
-              <p>{joke.joke}</p>
-            </li>
+          <li key={joke.id}>
+            <p>{joke.joke}</p>
+          </li>
         ))}
       </ul>
     </div>
