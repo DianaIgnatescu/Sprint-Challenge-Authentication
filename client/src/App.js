@@ -15,9 +15,14 @@ class App extends Component {
           <button type="submit">SIGN OUT</button>
         </nav>
 
+        <main>
+          <Route exact path="/sign-in" component={SignIn}/>
+          <Route path="/sign-up" component={SignUp}/>
+          <Route path="/jokes" component={Jokes}/>
+        </main>
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
