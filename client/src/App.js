@@ -22,6 +22,28 @@ class App extends Component {
     };
   }
 
+  componentDidMount() {
+    if (localStorage.getItem('token')) {
+      this.setState({ signedIn: true });
+    }
+  }
+
+  getJokes() {
+    const token = localStorage.getItem('token');
+    const reqOptions = {
+      headers: {
+        authorization: token
+      }
+    };
+
+    axios
+      .get('http://localhost:3300/api/jokes', reqOptions)
+      .then(res => {
+        this.setState({ jokes: res.data });
+      })
+      .catch(error => console.log(error));
+  }
+
   handleSignInChange = (event) => {
     const { name, value } = event.target;
     this.setState({
@@ -54,7 +76,7 @@ class App extends Component {
   };
 
   render() {
-    const { signIn, signedIn } = this.state;
+    const { jokes, signIn, signedIn } = this.state;
     return (
       <div className="App">
         <nav>
@@ -75,7 +97,14 @@ class App extends Component {
             />}
           />
           <Route path="/sign-up" component={SignUp}/>
-          <Route path="/jokes" component={Jokes}/>
+          <Route path="/jokes" render={(props) =>
+              <Jokes
+                  {...props}
+                  jokes={jokes}
+                  signedIn={signedIn}
+                  getJokes={this.getJokes.bind(this)}
+              />}
+          />
         </main>
       </div>
     );
