@@ -1,7 +1,11 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 
 const SignIn = (props) => {
-  const { handleSignInChange, handleSignIn, signIn } = props;
+  const { handleSignInChange, handleSignIn, signIn, signedIn } = props;
+  if (signedIn) {
+    return <Redirect to ="/jokes" />;
+  }
   return (
     <div>
       <form>

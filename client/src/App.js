@@ -97,12 +97,17 @@ class App extends Component {
     const { jokes, signIn, signedIn, signUp } = this.state;
     return (
       <div className="App">
-        <nav>
-          <NavLink to="/jokes">HOME</NavLink>
-          <NavLink to="/sign-in">SIGN IN</NavLink>
-          <NavLink to="/sign-up">SIGN UP</NavLink>
-          <button className="sign-out" type="submit" onClick={this.onSignOut}>SIGN OUT</button>
-        </nav>
+        {signedIn && localStorage.getItem('token') ? (
+            <nav>
+              <NavLink to="/jokes">HOME</NavLink>
+              <button className="sign-out" type="submit" onClick={this.onSignOut}>SIGN OUT</button>
+            </nav>
+        ) : (
+            <nav>
+              <NavLink to="/sign-in">SIGN IN</NavLink>
+              <NavLink to="/sign-up">SIGN UP</NavLink>
+            </nav>
+        )}
 
         <main>
           <Route exact path="/sign-in" render={(props) =>
