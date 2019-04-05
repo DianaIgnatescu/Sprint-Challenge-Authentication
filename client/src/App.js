@@ -32,13 +32,25 @@ class App extends Component {
   handleSignIn = (event) => {
     event.preventDefault();
     axios
-        .post('http://localhost:3300/api/login', this.state.signIn)
-        .then(response => {
-          localStorage.setItem('token', response.data.token);
-          this.setState({ signedIn: true });
-          this.props.history.push('/jokes');
-        })
-        .catch((error) => console.log(error));
+      .post('http://localhost:3300/api/login', this.state.signIn)
+      .then(response => {
+        localStorage.setItem('token', response.data.token);
+        this.setState({ signedIn: true });
+        this.props.history.push('/jokes');
+      })
+      .catch((error) => console.log(error));
+  };
+
+  onSignOut = () => {
+    if (localStorage.getItem('token')) {
+      localStorage.removeItem('token');
+      this.setState({
+        signedIn: false,
+      });
+      this.props.history.push('/sign-in');
+    } else {
+      this.props.history.push('/jokes');
+    }
   };
 
   render() {
@@ -49,17 +61,17 @@ class App extends Component {
           <NavLink to="/jokes">HOME</NavLink>
           <NavLink to="/sign-in">SIGN IN</NavLink>
           <NavLink to="/sign-up">SIGN UP</NavLink>
-          <button type="submit">SIGN OUT</button>
+          <button className="sign-out" type="submit" onClick={this.onSignOut}>SIGN OUT</button>
         </nav>
 
         <main>
           <Route exact path="/sign-in" render={(props) =>
             <SignIn
-                {...props}
-                signIn={signIn}
-                signedIn={signedIn}
-                handleSignInChange={this.handleSignInChange}
-                handleSignIn={this.handleSignIn}
+              {...props}
+              signIn={signIn}
+              signedIn={signedIn}
+              handleSignInChange={this.handleSignInChange}
+              handleSignIn={this.handleSignIn}
             />}
           />
           <Route path="/sign-up" component={SignUp}/>
